@@ -26,13 +26,14 @@ type MonthList = {
 type ValueNumberPair = [string, number];
 
 const managerList: ManagerList = {
-  aaron: '2675959',
-  curtis: '67277',
-  mike: '760692',
-  alex: '1418098',
-  jere: '4577575',
-  george: '1996958',
-  matt: '2612009',
+  Aaron: '2675959',
+  Curtis: '67277',
+  Mike: '760692',
+  Alex: '1418098',
+  Jeremiah: '4577575',
+  George: '1996958',
+  Matt: '2612009',
+  Liam: '6257277'
 };
 
 const setMonths: MonthList = {
@@ -116,8 +117,6 @@ const LeaugeTable = () => {
 
     fetchData();
   }, [selectedValue]);
-
-  const cellColors = ['#33FF57'];
 
   return (
     <div className="main-container">
