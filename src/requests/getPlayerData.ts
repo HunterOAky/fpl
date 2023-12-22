@@ -1,4 +1,4 @@
-const url = 'https://localhost:8443/points';
+const url = 'https://18.132.205.153/points';
 
 type ManagerList = Record<string, string>;
 
