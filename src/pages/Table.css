@@ -3,8 +3,13 @@
   max-width: 800px; 
   margin: 0 auto; 
   padding: 20px;
-  box-sizing: border-box; 
-  background-color: #f0f0f0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
+  .main-container {
+    padding: 10px; /* Adjust padding for smaller screens */
+  }
 }
 
 .select-month-container{

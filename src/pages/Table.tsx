@@ -121,10 +121,10 @@ const LeaugeTable = () => {
   return (
     <div className="main-container">
       <div className='title-container'>
-        <h1 className='title'>J F(antasy) K Leauge Table 2023/24</h1>
+        <h2 className='title'>J F(antasy) K Leauge Table 2023/24</h2>
       </div>
       <div className='select-month-container'>
-        <label style={{color:"#37003c", marginRight:"2%", fontWeight:"bold"}}>Select Month: </label>
+        <label style={{color:"#37003c", marginRight:"2%", fontWeight:"bold"}}>Select Months: </label>
         <Select value={selectedValue} onChange={handleChange} style={{ marginRight: '10px' }}>
           <MenuItem value="1">1 (Aug & Sept)</MenuItem>
           <MenuItem value="2">2 (Oct & Nov)</MenuItem>
