@@ -1,16 +1,15 @@
 const url = 'https://localhost:8443/points';
-export const getPlayerData = async (startWeek:number, endWeek:number, managerId:string) => {
+
+type ManagerList = Record<string, string>;
+
+export const getPlayerData = async (managerList: ManagerList) => {
   try {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        startWeek,
-        endWeek,
-        managerId
-      }),
+      body: JSON.stringify(managerList),
     });
 
     if (!response.ok) {

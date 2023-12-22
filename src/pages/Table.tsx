@@ -23,17 +23,24 @@ type MonthList = {
   };
 };
 
-type ValueNumberPair = [string, number];
+type WeekData = {
+  week: number;
+  points: number;
+};
+
+type ManagerData = {
+  [manager: string]: WeekData[];
+};
 
 const managerList: ManagerList = {
   Aaron: '2675959',
   Curtis: '67277',
-  Mike: '760692',
-  Alex: '1418098',
-  Jeremiah: '4577575',
-  George: '1996958',
-  Matt: '2612009',
-  Liam: '6257277'
+  Mike:'760692',
+  Alex:'1418098',
+  Jeremiah:'4577575',
+  George:'1996958',
+  Matt:'2612009',
+  Liam:'6257277'
 };
 
 const setMonths: MonthList = {
@@ -59,9 +66,10 @@ const setMonths: MonthList = {
   },
 };
 
-const LeaugeTable = () => {
+const LeagueTable = () => {
   const [selectedValue, setSelectedValue] = useState('2');
-  const [pointsList, setPointsList] = useState<ValueNumberPair[]>([]);
+  const [pointsList, setPointsList] = useState<ManagerData>({});
+  const [currentPointsList, setCurrentPointsList] = useState<Array<[string, number]>>([]);
 
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedValue(event.target.value);
@@ -70,53 +78,62 @@ const LeaugeTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let start: number;
-        let end: number;
-
-        switch (selectedValue) {
-          case '1':
-            start = setMonths.first.start;
-            end = setMonths.first.end;
-            break;
-          case '2':
-            start = setMonths.second.start;
-            end = setMonths.second.end;
-            break;
-          case '3':
-            start = setMonths.third.start;
-            end = setMonths.third.end;
-            break;
-          case '4':
-            start = setMonths.fourth.start;
-            end = setMonths.fourth.end;
-            break;
-          case '5':
-            start = setMonths.fifth.start;
-            end = setMonths.fifth.end;
-            break;
-          default:
-            start = 0;
-            end = 0;
-        }
-
-        const promises = Object.entries(managerList).map(([manager, managerId]) =>
-          getPlayerData(start, end, managerId).then((data) => ({ manager, data }))
-        );
-
-        const results = await Promise.all(promises);
-
-        const sortedPairs = results
-          .map(({ manager, data }) => [manager, data] as ValueNumberPair)
-          .sort((a, b) => a[1] - b[1]).reverse();
-
-        setPointsList(sortedPairs);
+        const results = await getPlayerData(managerList);
+        setPointsList(results);
       } catch (error) {
         console.error('Error:', error);
       }
     };
 
     fetchData();
-  }, [selectedValue]);
+  }, []);
+
+  useEffect(() => {
+    const updatePointsList = () => {
+      let start: number;
+      let end: number;
+
+      switch (selectedValue) {
+        case '1':
+          start = setMonths.first.start;
+          end = setMonths.first.end;
+          break;
+        case '2':
+          start = setMonths.second.start;
+          end = setMonths.second.end;
+          break;
+        case '3':
+          start = setMonths.third.start;
+          end = setMonths.third.end;
+          break;
+        case '4':
+          start = setMonths.fourth.start;
+          end = setMonths.fourth.end;
+          break;
+        case '5':
+          start = setMonths.fifth.start;
+          end = setMonths.fifth.end;
+          break;
+        default:
+          start = 0;
+          end = 0;
+      }
+
+      const updatedPointsList: Array<[string, number]> = Object.entries(pointsList).map(
+        ([manager, managerWeeks]) => [
+          manager,
+          managerWeeks
+            .filter(({ week }) => week >= start && week <= end)
+            .reduce((totalPoints, { points }) => totalPoints + points, 0),
+        ]
+      );
+
+      setCurrentPointsList(updatedPointsList);
+      console.log(currentPointsList)
+    };
+
+    updatePointsList();
+  }, [selectedValue, pointsList]);
 
   return (
     <div className="main-container">
@@ -124,7 +141,7 @@ const LeaugeTable = () => {
         <h2 className='title'>J F(antasy) K Leauge Table 2023/24</h2>
       </div>
       <div className='select-month-container'>
-        <label style={{color:"#37003c", marginRight:"2%", fontWeight:"bold"}}>Select Months: </label>
+        <label style={{ color: "#37003c", marginRight: "2%", fontWeight: "bold" }}>Select Months: </label>
         <Select value={selectedValue} onChange={handleChange} style={{ marginRight: '10px' }}>
           <MenuItem value="1">1 (Aug & Sept)</MenuItem>
           <MenuItem value="2">2 (Oct & Nov)</MenuItem>
@@ -138,18 +155,18 @@ const LeaugeTable = () => {
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
-              <TableRow style={{backgroundColor: "#37003c"}}>
-                <TableCell style={{color:"white", textAlign:"center", fontWeight:"bold"}}>Position</TableCell>
-                <TableCell style={{color:"white", textAlign:"center", fontWeight:"bold"}}>Manager</TableCell>
-                <TableCell style={{color:"white", textAlign:"center", fontWeight:"bold"}}>Points</TableCell>
+              <TableRow style={{ backgroundColor: "#37003c" }}>
+                <TableCell style={{ color: "white", textAlign: "center", fontWeight: "bold" }}>Position</TableCell>
+                <TableCell style={{ color: "white", textAlign: "center", fontWeight: "bold" }}>Manager</TableCell>
+                <TableCell style={{ color: "white", textAlign: "center", fontWeight: "bold" }}>Points</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {pointsList.map(([manager, points], index) => (
-                <TableRow key={manager} style={{ backgroundColor: index === 0 ? '#33FF57': '#EFEFEF'}}>
-                  <TableCell style={{textAlign:"center", fontWeight:"bold"}}>{index+1}</TableCell>
-                  <TableCell style={{textAlign:"center"}}>{manager}</TableCell>
-                  <TableCell style={{textAlign:"center"}}>{points}</TableCell>
+              {currentPointsList.sort(([, pointsA], [, pointsB]) => pointsB - pointsA).map(([manager, points], index) => (
+                <TableRow key={manager} style={{ backgroundColor: index === 0 ? '#33FF57' : '#EFEFEF' }}>
+                  <TableCell style={{ textAlign: "center", fontWeight: "bold" }}>{index + 1}</TableCell>
+                  <TableCell style={{ textAlign: "center" }}>{manager}</TableCell>
+                  <TableCell style={{ textAlign: "center" }}>{points}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -160,4 +177,4 @@ const LeaugeTable = () => {
   );
 };
 
-export default LeaugeTable;
+export default LeagueTable;
