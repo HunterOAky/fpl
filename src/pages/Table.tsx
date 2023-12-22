@@ -10,6 +10,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 import './Table.css';
 
 type ManagerList = {
@@ -26,6 +28,7 @@ type MonthList = {
 type WeekData = {
   week: number;
   points: number;
+  teamName: string;
 };
 
 type ManagerData = {
@@ -70,6 +73,7 @@ const LeagueTable = () => {
   const [selectedValue, setSelectedValue] = useState('2');
   const [pointsList, setPointsList] = useState<ManagerData>({});
   const [currentPointsList, setCurrentPointsList] = useState<Array<[string, number]>>([]);
+  const [loading, setLoading] = useState(true)
 
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedValue(event.target.value);
@@ -80,6 +84,7 @@ const LeagueTable = () => {
       try {
         const results = await getPlayerData(managerList);
         setPointsList(results);
+        setLoading(false);
       } catch (error) {
         console.error('Error:', error);
       }
@@ -137,6 +142,12 @@ const LeagueTable = () => {
 
   return (
     <div className="main-container">
+      { loading ?
+      <div className='progress-bar'>
+        <CircularProgress style={{color:"lightblue"}} />
+        <h3 style={{color:'#37003c'}}>Fetching Data.. be patient you bastard</h3>
+      </div> :
+      <div>
       <div className='title-container'>
         <h2 className='title'>J F(antasy) K Leauge Table 2023/24</h2>
       </div>
@@ -150,7 +161,6 @@ const LeagueTable = () => {
           <MenuItem value="5">5 (Apr & May)</MenuItem>
         </Select>
       </div>
-
       <div>
         <TableContainer component={Paper}>
           <Table>
@@ -164,8 +174,11 @@ const LeagueTable = () => {
             <TableBody>
               {currentPointsList.sort(([, pointsA], [, pointsB]) => pointsB - pointsA).map(([manager, points], index) => (
                 <TableRow key={manager} style={{ backgroundColor: index === 0 ? '#33FF57' : '#EFEFEF' }}>
-                  <TableCell style={{ textAlign: "center", fontWeight: "bold" }}>{index + 1}</TableCell>
-                  <TableCell style={{ textAlign: "center" }}>{manager}</TableCell>
+                  <TableCell style={{ textAlign: "center", fontWeight: "bold" }}>{index === 0 ? <span>👑</span> : index + 1}</TableCell>
+                  <TableCell style={{ textAlign: "center", display:"block" }}>
+                    <div style={{fontWeight:"bold"}}>{manager}</div>
+                    <label>{pointsList[manager][0].teamName}</label>
+                  </TableCell>
                   <TableCell style={{ textAlign: "center" }}>{points}</TableCell>
                 </TableRow>
               ))}
@@ -173,6 +186,7 @@ const LeagueTable = () => {
           </Table>
         </TableContainer>
       </div>
+      </div>}
     </div>
   );
 };

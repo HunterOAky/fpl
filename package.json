@@ -13,6 +13,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.15.1",
+    "@mui/material-next": "^6.0.0-alpha.114",
     "http-proxy-middleware": "^2.0.6",
     "node-fetch": "^3.3.2",
     "react": "^18.2.0",
