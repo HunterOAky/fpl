@@ -13,6 +13,7 @@ import Paper from '@mui/material/Paper';
 import CircularProgress from '@mui/material/CircularProgress';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import TextField from '@mui/material/TextField';
 import './Table.css';
 
 type ManagerList = {
@@ -76,8 +77,8 @@ const LeagueTable = () => {
   const [currentPointsList, setCurrentPointsList] = useState<Array<[string, number]>>([]);
   const [loading, setLoading] = useState(true);
   const [customWeekEntry, setCustomWeekEntry] = useState<boolean>(false);
-  // const [customStart, setCustomStart] = useState(1);
-  // const [customEnd, setCustomEnd] = useState(2);
+  const [customStart, setCustomStart] = useState(1);
+  const [customEnd, setCustomEnd] = useState(2);
 
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedValue(event.target.value);
@@ -85,6 +86,16 @@ const LeagueTable = () => {
 
   const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCustomWeekEntry(event.target.checked);
+  };
+
+  const handleCustomWeekChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+
+    if (name === 'customStart') {
+      setCustomStart(Number(value));
+    } else if (name === 'customEnd') {
+      setCustomEnd(Number(value));
+    }
   };
 
   useEffect(() => {
@@ -136,7 +147,7 @@ const LeagueTable = () => {
         ([manager, managerWeeks]) => [
           manager,
           managerWeeks
-            .filter(({ week }) => week >= start && week <= end)
+            .filter(({ week }) => week >= (customWeekEntry ? customStart: start) && week <= (customWeekEntry? customEnd : end))
             .reduce((totalPoints, { points }) => totalPoints + points, 0),
         ]
       );
@@ -146,7 +157,7 @@ const LeagueTable = () => {
     };
 
     updatePointsList();
-  }, [selectedValue, pointsList]);
+  }, [selectedValue, pointsList, customWeekEntry, customStart, customEnd]);
 
   return (
     <div className="main-container">
@@ -157,22 +168,52 @@ const LeagueTable = () => {
       </div> :
       <div>
       <div className='select-month-container'>
-        <div>
         <FormControlLabel
         style={{ color: "#37003c" }}
         control={<Switch checked={customWeekEntry} onChange={handleSwitchChange} />}
         label="Custom Weeks"
-      />
-        </div>
-        <div className='select-month-default'>
-        <label style={{ color: "#37003c", fontWeight: "bold", textAlign: "center", display: "flex", alignItems: "center", marginRight:"10px" }}>Select: </label>
-        <Select value={selectedValue} onChange={handleChange}>
-          <MenuItem value="1">1 (Aug & Sept)</MenuItem>
-          <MenuItem value="2">2 (Oct & Nov)</MenuItem>
-          <MenuItem value="3">3 (Dec & Jan)</MenuItem>
-          <MenuItem value="4">4 (Feb & Mar)</MenuItem>
-          <MenuItem value="5">5 (Apr & May)</MenuItem>
-        </Select>
+        />
+        <div>
+          { customWeekEntry ?
+            <div className='custom-weeks-select'>
+              <TextField
+                label="Start Week"
+                type="number"
+                value={customStart}
+                onChange={handleCustomWeekChange}
+                key="start"
+                name="customStart"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                inputProps={{style:{textAlign:"center", fontWeight:"bold", color:"#37003c"}}}
+                style={{ width: "100px", marginRight: "10px" }}  // Add marginRight to create space
+              />
+              <TextField
+                label="End Week"
+                type="number"
+                value={customEnd}
+                key="end"
+                name="customEnd"
+                onChange={handleCustomWeekChange}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                inputProps={{style:{textAlign:"center", fontWeight:"bold", color:"#37003c"}}}
+                style={{ width: "100px" }}
+              />
+          </div>
+          :
+          <div className='select-month-default'>
+
+            <Select value={selectedValue} onChange={handleChange}>
+              <MenuItem value="1">1 (Aug & Sept)</MenuItem>
+              <MenuItem value="2">2 (Oct & Nov)</MenuItem>
+              <MenuItem value="3">3 (Dec & Jan)</MenuItem>
+              <MenuItem value="4">4 (Feb & Mar)</MenuItem>
+              <MenuItem value="5">5 (Apr & May)</MenuItem>
+            </Select>
+          </div>}
         </div>
       </div>
       <div>
