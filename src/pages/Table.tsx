@@ -90,11 +90,20 @@ const LeagueTable = () => {
 
   const handleCustomWeekChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-
+    const numericValue = Number(value);
+  
+    // Check if the value is a valid number
+    if (isNaN(numericValue)) {
+      // Display an error message or handle the invalid input in some way
+      console.error(`Invalid input for ${name}: ${value}`);
+      return;
+    }
+  
+    // Set the state based on the valid number
     if (name === 'customStart') {
-      setCustomStart(Number(value));
+      setCustomStart(numericValue);
     } else if (name === 'customEnd') {
-      setCustomEnd(Number(value));
+      setCustomEnd(numericValue);
     }
   };
 
@@ -178,7 +187,7 @@ const LeagueTable = () => {
             <div className='custom-weeks-select'>
               <TextField
                 label="Start Week"
-                type="number"
+                
                 value={customStart}
                 onChange={handleCustomWeekChange}
                 key="start"
@@ -191,7 +200,7 @@ const LeagueTable = () => {
               />
               <TextField
                 label="End Week"
-                type="number"
+                
                 value={customEnd}
                 key="end"
                 name="customEnd"
