@@ -144,12 +144,9 @@ const LeagueTable = () => {
       { loading ?
       <div className='progress-bar'>
         <CircularProgress style={{color:"lightblue"}} />
-        <h3 style={{color:'#37003c'}}>Fetching Data.. be patient you bastard</h3>
+        <h3 style={{color:'#37003c'}}>Loading... be patient you bastard</h3>
       </div> :
       <div>
-      <div className='title-container'>
-        <h2 className='title'>J F(antasy) K Leauge Table 2023/24</h2>
-      </div>
       <div className='select-month-container'>
         <label style={{ color: "#37003c", marginRight: "2%", fontWeight: "bold" }}>Select Months: </label>
         <Select value={selectedValue} onChange={handleChange} style={{ marginRight: '10px' }}>
