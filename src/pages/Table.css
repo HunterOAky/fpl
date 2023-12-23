@@ -14,10 +14,15 @@
 
 .select-month-container{
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   margin-bottom: 3%;
   margin-top: -2%;
   align-items: center;
+}
+
+.select-month-default{
+  display: flex;
+  justify-content: space-between;
 }
 
 .title-container{
