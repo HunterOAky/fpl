@@ -76,8 +76,8 @@ const LeagueTable = () => {
   const [currentPointsList, setCurrentPointsList] = useState<Array<[string, number]>>([]);
   const [loading, setLoading] = useState(true);
   const [customWeekEntry, setCustomWeekEntry] = useState<boolean>(false);
-  const [customStart, setCustomStart] = useState(1);
-  const [customEnd, setCustomEnd] = useState(2);
+  // const [customStart, setCustomStart] = useState(1);
+  // const [customEnd, setCustomEnd] = useState(2);
 
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedValue(event.target.value);
