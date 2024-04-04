@@ -72,7 +72,7 @@ const setMonths: MonthList = {
 };
 
 const LeagueTable = () => {
-  const [selectedValue, setSelectedValue] = useState('3');
+  const [selectedValue, setSelectedValue] = useState('5');
   const [pointsList, setPointsList] = useState<ManagerData>({});
   const [currentPointsList, setCurrentPointsList] = useState<Array<[string, number]>>([]);
   const [loading, setLoading] = useState(true);
